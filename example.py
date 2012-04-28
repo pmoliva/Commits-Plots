@@ -1,4 +1,5 @@
-from commits_plots import  GitBackend, CommitsTimeSeries, CommitsBarChart
+from commits_plots import  CommitsTimeSeries, CommitsBarChart
+from backend import GitBackend
 
 
 if __name__ == '__main__':
