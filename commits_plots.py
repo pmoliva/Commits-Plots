@@ -2,7 +2,7 @@ import numpy.numarray as na
 from pylab import *
 import abc
 
-        
+
 
 class CommitsChart():
 
@@ -26,8 +26,8 @@ class CommitsBarChart(CommitsChart):
        self. backend = backend
 
 
-    def plot_chart(self, output_filename):
-        self.backend.create_tmp_file()
+    def plot_chart(self, version_dir, output_filename):
+        self.backend.create_tmp_file(version_dir)
         for dev, date in self.backend.get_parsed_commit():
             if dev in self.devs:
                 self.devs[dev] += 1;
@@ -36,10 +36,12 @@ class CommitsBarChart(CommitsChart):
         for label, point in self.devs.items():
             self.labels.append(label)
             self.data.append(point)
-        xlocations = na.array(range(len(self.data)))+0.5
+        xlocations = na.array(range(len(self.data)))*3+0.5
         width = 0.5
         bar(xlocations, self.data, width=width)
         max_bar = max(self.data)
+
+        rcParams['font.size'] = 8
         tick = int(max_bar*0.10) or 1
         yticks(range(0, max_bar + 2*tick , tick))
         xticks(xlocations+ width/2, self.labels)
@@ -51,7 +53,7 @@ class CommitsBarChart(CommitsChart):
 
 
 class CommitsTimeSeries(CommitsChart):
-   
+
     backend = None
     dates = {}
     values = {}
@@ -60,8 +62,8 @@ class CommitsTimeSeries(CommitsChart):
         self.backend = backend
 
 
-    def plot_chart(self, output_filename):
-        self.backend.create_tmp_file()
+    def plot_chart(self, version_dir, output_filename):
+        self.backend.create_tmp_file(version_dir)
         for dev,commit_date in self.backend.get_parsed_commit():
             if dev not in self.values:
                 self.commits[dev] = 0
@@ -84,8 +86,13 @@ class CommitsTimeSeries(CommitsChart):
         pls = []
         legends = []
         for name, data in self.values.items():
-            pls.append(ax.plot_date(self.dates[name], data, 
+            pls.append(ax.plot_date(self.dates[name], data,
                        color=cgen.next()))
             legends.append(name)
-        fig.legend(pls, legends, 'upper right', ncol=5)
+        # Shink current axis by 20%
+        box = ax.get_position()
+        ax.set_position([box.x0, box.y0, box.width, box.height*0.8])
+
+
+        fig.legend(pls, legends, 'upper left', ncol=5)
         savefig(output_filename)
