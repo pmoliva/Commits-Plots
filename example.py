@@ -6,6 +6,6 @@ if __name__ == '__main__':
     backend = SVNBackend()
 
     cbar = CommitsBarChart(backend)
-    cbar.plot_chart('/home/pedro/interpretes/desarrollo/web/', 'bar_chart')
+    cbar.plot_chart('/home/fool/dir', 'bar_chart')
     tchart = CommitsTimeSeries(backend)
-    tchart.plot_chart('/home/pedro/interpretes/desarrollo/web/', 'time_series')
+    tchart.plot_chart('/home/fool/dir/', 'time_series')
